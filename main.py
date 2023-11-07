@@ -26,7 +26,7 @@ class HedBot(Config, Markup, DataBase):
                 name = self.get(chat.id, 'users', 'name')[0]
                 await msg.answer(f"<b>Добрый день, <u><a href='tg://user?id={chat.id}'>{name}</a></u>!</b>")
 
-    async def name(self, msg: Message, state: FSMContext):
+    async def get_name(self, msg: Message, state: FSMContext):
         chat = msg.chat
         if chat.id > 0:
             async with state.proxy() as data:
@@ -37,13 +37,15 @@ class HedBot(Config, Markup, DataBase):
 
             await msg.answer(f"<b>Добро пожаловать в <u>{self.WORLD_NAME_RUS}</u>, {msg.text}</b>!")
 
-
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
     async def move(self, msg: Message):
         chat = msg.chat
         if chat.id > 0 and self.check(chat.id):
-            await msg.answer("<b>Для начала выберите зону перемещения: </b>", reply_markup=self.zones)
+            await msg.answer(
+                "<b>Для начала выберите зону перемещения: </b>",
+                reply_markup=self.zones
+            )
 
     async def callback(self, call: CallbackQuery):
         msg = call.message
@@ -57,7 +59,44 @@ class HedBot(Config, Markup, DataBase):
                     text="<b>Далле выберите область: </b>",
                     reply_markup=self.forest
                 )
+            case "swamp":
+                await self.bot.edit_message_text(
+                    chat_id=chat.id,
+                    message_id=msg.message_id,
+                    text="<b>Далле выберите область: </b>",
+                    reply_markup=self.swamp
+                )
+            case "clan":
+                await self.bot.edit_message_text(
+                    chat_id=chat.id,
+                    message_id=msg.message_id,
+                    text="<b>Далле выберите область: </b>",
+                    reply_markup=self.clan
+                )
+            case "hotkeys":
+                await self.bot.edit_message_text(
+                    chat_id=chat.id,
+                    message_id=msg.message_id,
+                    text="<b>Далле выберите действие: </b>",
+                    reply_markup=self.hotkeys
+                )
 
+            case "forest_glade":
+                await self.bot.edit_message_text(
+                    chat_id=chat.id,
+                    message_id=msg.message_id,
+                    text="<b>Далле выберите точку: </b>",
+                    reply_markup=self.forest_glade
+                )
+            case "swamp_logging":
+                await self.bot.edit_message_text(
+                    chat_id=chat.id,
+                    message_id=msg.message_id,
+                    text="<b>Далле выберите точку: </b>",
+                    reply_markup=self.swamp_logging
+                )
+
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
     def run(self):
         self.dp.register_message_handler(self.start, commands=['start'], state=None)
@@ -65,6 +104,7 @@ class HedBot(Config, Markup, DataBase):
 
         self.dp.register_message_handler(self.move, commands=['map'])
         self.dp.register_callback_query_handler(self.callback, lambda call:True)
+
         executor.start_polling(
             self.dp, skip_updates=True
         )

@@ -65,11 +65,16 @@ names = ["Бревенчатый Лагерь", "Пилорама Гроза", "
 
 """
 
-s = ["Бревенчатый Лагерь", "Пилорама Гроза", "Топорище", "Дровосекова Задача", "Лесная Рубка", "Секачи Призраки",
-"Рубильный Край", "Сосновая Палуба", "Тигель Древесины", "Осиная Мастерская", "Расколотый Дуб", "Лесной Трофей"]
+data = [
+    ["r3gF", "FNpG", "tbkF", "AHWj"],
+    ["JOZc", "4Km9", "U7Zp", "P23g"],
+    ["OVJ6", "L4cs", "x5Po", "6JVD"],
+    ["3slz", "ARYP", "ybLS", "sklQ"],
+    ["PL8F", "iYex", "53WN", "sRG1"],
+    ["jgM3", "1xXJ", "uZWK", "DrJW"]
+]
 
-text = ''
-for i in range(12):
-    text += f'[ib("{s[i]}", callback_data="logging{i+1}")],\n'
+for i in data:
+    sub = ''.join([f'ib("{j}", callback_data="{j}"),' for j in i])
 
-print(text)
+    print(f'[{sub}],')
